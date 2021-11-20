@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Components/STUCharacterMovementComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "STUBaseCharacter.generated.h"
@@ -15,7 +16,7 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
     GENERATED_BODY()
 
   public:
-    ASTUBaseCharacter();
+    ASTUBaseCharacter(const FObjectInitializer &ObjInit);
 
   protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -28,8 +29,19 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
   public:
     virtual void Tick(float DeltaTime) override;
     virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
-  
-private:
+
+    UFUNCTION(BlueprintCallable, Category = "Movement")
+    bool IsRunning() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Movement")
+    float GetMovementDirection() const;
+
+  private:
     void MoveForward(float Amount);
     void MoveRight(float Amount);
+    void RunStart();
+    void RunStop();
+
+    bool WantsToRun = false;
+    bool IsMovingForward = false;
 };

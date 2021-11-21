@@ -8,6 +8,8 @@
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
+DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
+
 ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer &ObjInit)
     : Super(
           ObjInit.SetDefaultSubobjectClass<USTUCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -22,7 +24,7 @@ ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer &ObjInit)
     CameraComponent->SetupAttachment(SpringArmComponent);
 
     HealthComponent = CreateDefaultSubobject<USTUHealthComponent>("HealthComponent");
- 
+
     HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
     HealthTextComponent->SetupAttachment(GetRootComponent());
 }
@@ -34,6 +36,7 @@ void ASTUBaseCharacter::BeginPlay()
     check(GetCapsuleComponent());
     check(HealthComponent);
     check(HealthTextComponent);
+
 }
 
 void ASTUBaseCharacter::Tick(float DeltaTime)

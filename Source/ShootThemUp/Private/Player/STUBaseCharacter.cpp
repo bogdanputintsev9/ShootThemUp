@@ -3,11 +3,14 @@
 #include "Player/STUBaseCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "Components/STUCharacterMovementComponent.h"
+#include "Components/STUHealthComponent.h"
+#include "Components/TextRenderComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 
 ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer &ObjInit)
-    : Super(ObjInit.SetDefaultSubobjectClass<USTUCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
+    : Super(
+          ObjInit.SetDefaultSubobjectClass<USTUCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
     PrimaryActorTick.bCanEverTick = true;
 
@@ -17,18 +20,27 @@ ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer &ObjInit)
 
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(SpringArmComponent);
+
+    HealthComponent = CreateDefaultSubobject<USTUHealthComponent>("HealthComponent");
+ 
+    HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
+    HealthTextComponent->SetupAttachment(GetRootComponent());
 }
 
 void ASTUBaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
     check(GetCharacterMovement());
-    check(GetCapsuleComponent())
+    check(GetCapsuleComponent());
+    check(HealthComponent);
+    check(HealthTextComponent);
 }
 
 void ASTUBaseCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+    const auto Health = HealthComponent->GetHealth();
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
 
 void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
